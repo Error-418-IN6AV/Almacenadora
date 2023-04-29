@@ -1,7 +1,7 @@
 'use strict'
 
 const Arrendamiento = require('./arrendamiento.model');
-const Client = require('../client/client.model');
+const Client = require('../cliente/cliente.model');
 const Cellars = require('../cellars/cellars.model');
 const AdditionalServices = require('../additionalservices/additionalservices.model');
 

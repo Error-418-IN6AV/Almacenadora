@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const arrendamientoSchema = mongoose.Schema({
     client: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Client',
         required: true
     },
     cellars: {
