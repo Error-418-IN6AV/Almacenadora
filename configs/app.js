@@ -6,12 +6,14 @@ const helmet = require('helmet');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3500;
+const arrendamientoController = require('../src/arrendamiento/arrendamiento.controller')
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
+app.use('/arrendamiento', arrendamientoController)
 
 exports.initServer = ()=>{
     app.listen(port);
