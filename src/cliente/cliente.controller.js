@@ -24,11 +24,23 @@ exports.register = async(req, res)=>{
 
 exports.getClients = async(req, res)=>{
     try {
-        let clienta = await Cliente.find();
-        return res.send({clienta})
+        let clientes = await Cliente.find();
+        return res.send({clientes})
     } catch (err) {
         console.error(err)
         return res.status(500).send({message: 'Error getting clientes'})
+    }
+}
+
+exports.getClient = async(req, res)=>{
+    try {
+        let clientId = req.params.id;
+        let cliente = await Cliente.findOne({_id: clientId});
+        if(!cliente) res.status(404).send({message: 'Client not found'})
+        return res.send({message: 'client found', cliente})
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({message: 'Error when obtaining client'})
     }
 }
 

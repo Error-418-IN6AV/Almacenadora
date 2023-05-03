@@ -2,6 +2,7 @@
 
 const Cellars = require('./cellars.model')
 const Arrendamiento = require('../arrendamiento/arrendamiento.model')
+const {validateData} = require('../utils/validate')
 
 exports.test = (req, res)=>{
     res.send({message: 'Test function is running'});
@@ -18,7 +19,7 @@ exports.add = async(req, res)=>{
         //Guardar
         let cellars = new Cellars(data);
         await cellars.save();
-        return res.send({message: 'winery created'})
+        return res.send({message: 'winery created', cellars})
         
     } catch (err) {
         console.error(err)
@@ -49,6 +50,48 @@ exports.getStore = async(req, res)=>{
     }
 }
 
+exports.searchStatus = async (req, res) => {
+    try {
+        let params = {
+            status: req.body.status,
+        }
+        let validate = validateData(params)
+        if (validate) return res.status(400).send(validate);
+        let cellars = await Cellars.find({
+            name: {
+                $regex: params.name,
+                $options: 'i'
+            },
+            status: 'AVAILABLE'
+        })
+        return res.send({ cellars })
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'No se encuentra bodega' })
+    }
+}
+
+exports.searchNotAvailable = async (req, res) => {
+    try {
+        let params = {
+            name: req.body.name,
+        }
+        let validate = validateData(params)
+        if (validate) return res.status(400).send(validate);
+        let cellars = await Cellars.find({
+            name: {
+                $regex: params.name,
+                $options: 'i'
+            },
+            status: 'NOAVAILABLE'
+        })
+        return res.send({ cellars })
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'No se encuentra bodega' })
+    }
+}
+
 exports.updateCellar = async(req, res)=>{
     try {
         //Capturar la data 
@@ -56,13 +99,13 @@ exports.updateCellar = async(req, res)=>{
         //capturar el id de la bodega
         let cellarId = req.params.id;
         if(data.location || data.status)return res.status(400).send({message: 'Some params are not acepted'})
-        let existCellar = await Cellars.findByIdAndUpdate(
+        let updateBodega = await Cellars.findByIdAndUpdate(
          {_id: cellarId },  
           data, 
         { new: true }
         )
-        if(!existCellar) return res.send({message: 'No se encontro bodega '})
-        return res.send({message: 'Cellar updated sucessfully', existCellar })
+        if(!updateBodega) return res.send({message: 'No se encontro bodega '})
+        return res.send({message: 'Cellar updated sucessfully', updateBodega })
     } catch (err) {
         console.error(err);
         return res.status(500).send({message: 'Error update cellar'})

@@ -7,8 +7,9 @@ const { ensureAuth, isAdmin } = require('../services/authenticated');
 
 //Ruta de testeo
 //Rutas públicas
-api.post('/add', [ensureAuth, isAdmin], arrendamientoController.add);
-api.get('/get', [ensureAuth], arrendamientoController.getArrendamientosByBodegasArrendadas);
-api.put('/update/:id', [ensureAuth, isAdmin], arrendamientoController.updateArrendamiento);
-api.delete('/delete/:id',[ensureAuth, isAdmin], arrendamientoController.deleteArrendamiento);
+api.post('/add',  [ensureAuth],  arrendamientoController.add);
+api.get('/get',   [ensureAuth],   arrendamientoController.getArrendamientos);
+api.get('/get/:id',   [ensureAuth],  arrendamientoController.getArrendamientosById);
+api.put('/update/:id',     [ensureAuth],     arrendamientoController.updateArrendamiento);
+api.delete('/delete/:id',  [ensureAuth],   arrendamientoController.deleteArrendamiento);
 module.exports = api;

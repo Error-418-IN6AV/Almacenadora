@@ -30,12 +30,23 @@ exports.add = async(req, res)=>{
     }
 }
 
-exports.getArrendamientosByBodegasArrendadas = async(req, res)=>{
+exports.getArrendamientosById = async(req, res)=>{
     try{
-        let bodegasNoDisponibles = await Cellars.find({status: 'NOAVAILABLE'});
-        let bodegasIds = bodegasNoDisponibles.map(cellars => cellars._id);
-        let arrendamientos = await Arrendamiento.find({cellars: {$in: bodegasIds}});
-        return res.send({arrendamientos});
+        let arrendamientoId = req.params.id;
+        let arrendamieto = await Arrendamiento.findOne({_id: arrendamientoId}).populate('client').populate('cellars').populate('additionalServices');
+        if(!arrendamieto) return res.status(404).send({message: 'Arrendamiento not found'});
+        return res.send({arrendamieto});
+    }catch(err){
+        console.error(err);
+        return res.status(500).send({message: 'Error getting arrendamiento'});
+    }
+}
+
+exports.getArrendamientos = async(req, res)=>{
+    try{
+        //Buscar datos
+        let arrendamientos = await Arrendamiento.find().populate('client').populate('cellars').populate('additionalServices');
+        return res.send({message: 'Arrendamientos found', arrendamientos});
     }catch(err){
         console.error(err);
         return res.status(500).send({message: 'Error getting arrendamientos'});

@@ -62,7 +62,7 @@ exports.save = async(req, res)=>{
         data.password = await encrypt(data.password);
         let user = new User(data);
         await user.save();
-        return res.send({message: 'Account created sucessfully'});
+        return res.send({message: 'Account created sucessfully', user});
     }catch(err){
         console.error(err);
         return res.status(500).send({message: 'Error saving user', error: err.message});
@@ -80,8 +80,13 @@ exports.login = async(req, res)=>{
         if(msg) return res.status(400).send(msg)
         let user = await User.findOne({username: data.username});
         if(user && await checkPassword(data.password, user.password)) {
+            let userLogged = {
+                name: user.name,
+                username: user.username,
+                role: user.role
+            }
             let token = await createToken(user)
-            return res.send({message: 'User logged sucessfully', token});
+            return res.send({message: 'User logged sucessfully', token, userLogged});
         }
         return res.status(401).send({message: 'Invalid credentials'});
     }catch(err){
@@ -105,10 +110,10 @@ exports.update = async(req, res)=>{
     try{
         let userId = req.params.id;
         let data = req.body;
-        if(userId != req.user.sub) return res.status(401).send({message: 'Dont have permission to do this action'});
+        //if(userId != req.user.sub) return res.status(401).send({message: 'Dont have permission to do this action'});
         if(data.password || Object.entries(data).length === 0 || data.role) return res.status(400).send({message: 'Have submitted some data that cannot be updated'});
         let userUpdated = await User.findOneAndUpdate(
-            {_id: req.user.sub},
+            {_id:userId},
             data,
             {new: true} 
         )

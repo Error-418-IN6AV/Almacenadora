@@ -22,8 +22,8 @@ exports.add = async (req, res) => {
 
 exports.getServices = async (req, res) => {
     try {
-        let services = await Service.find();
-        return res.send({ message: 'Servicios encontrados', services });
+        let servicios = await Service.find();
+        return res.send({ message: 'Servicios encontrados', servicios });
     } catch (err) {
         console.error(err);
         return res.status(500).send({ message: 'Error al obtener servicios' });

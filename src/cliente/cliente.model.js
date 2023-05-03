@@ -27,4 +27,4 @@ const clienteSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Cliente', clienteSchema);
+module.exports = mongoose.model('Client', clienteSchema);
